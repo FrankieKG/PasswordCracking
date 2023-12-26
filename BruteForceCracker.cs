@@ -39,20 +39,23 @@ namespace PasswordCracking
       string[] keys = batch.ToArray();
 
       // Execute kernel with batch data
-      uint keyLength = 1; // Adjust this based on your säger hur långa gissningarna ska vara kernel's expected input length
+      uint keyLength = (uint)keys[0].Length; // Adjust this based on your säger hur långa gissningarna ska vara kernel's expected input length
 
       kernel.ExecuteSha256Kernel(keys, keyLength, out byte[] outputData);
-
+  
       // Process output data
       for (int i = 0; i < keys.Length; i++)
       {
+        int hashStringSize = 64;
         // Extract hash for each password in batch
-        byte[] hashBytes = new byte[32]; // SHA-256 hash size
-        // Array.Copy(outputData, i * 32, hashBytes, 0, 32); // Correct index based on hash size
+        byte[] hashBytes = new byte[hashStringSize]; // SHA-256 hash size
+         Array.Copy(outputData, i * hashStringSize, hashBytes, 0, hashStringSize); // Correct index based on hash size
+        string hashString = Encoding.ASCII.GetString(hashBytes);
         Console.WriteLine($"Raw Hash Bytes for {keys[i]}: {BitConverter.ToString(hashBytes).Replace("-", "").ToLower()}");
         Console.WriteLine($"output: {outputData[4]}");
         Console.WriteLine($"Length of Hash Bytes: {hashBytes.Length}");
-        string hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+    
+        Console.WriteLine($"Hash for {keys[i]}: {hashString}");
 
         if (hashString.Equals(targetHash, StringComparison.OrdinalIgnoreCase))
         {

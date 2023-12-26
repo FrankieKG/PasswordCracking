@@ -39,7 +39,7 @@ namespace PasswordCracking
       CheckError(error);
 
       // Read the OpenCL program source
-      string programSource = File.ReadAllText("C:\\Users\\bajsk\\source\\repos\\PasswordCracking\\sha256Copy.cl");
+      string programSource = File.ReadAllText("C:\\Users\\bajsk\\source\\repos\\PasswordCrackingtest3\\PasswordCracking\\sha256Copy.cl");
 
       // Create and build the OpenCL program
       program = Cl.CreateProgramWithSource(context, 1, new[] { programSource }, null, out error);
@@ -55,13 +55,13 @@ namespace PasswordCracking
 
       // Prepare input data
       byte[] formattedInputData = PrepareInputData(keys, keyLength);
-
+      foreach (byte inputData in formattedInputData) { Console.WriteLine($"formattedinputdata: {inputData}"); }
       // Create input buffer
       IMem inputBuffer = Cl.CreateBuffer(context, MemFlags.ReadOnly | MemFlags.CopyHostPtr, formattedInputData, out error);
       CheckError(error);
 
       // Output data for each key (32 bytes for each SHA-256 hash)
-      outputData = new byte[keys.Length * 32 * 2];
+      outputData = new byte[keys.Length * 64 ];
       IMem outputBuffer = Cl.CreateBuffer(context, MemFlags.WriteOnly, outputData.Length, out error);
       CheckError(error);
 
@@ -103,25 +103,29 @@ namespace PasswordCracking
         throw new Exception($"OpenCL Error: {err}");
       }
     }
-    
+
     public byte[] PrepareInputData(string[] keys, uint keyLength)
     {
       List<byte> formattedData = new List<byte>();
-
+      keyLength = 2;
       foreach (var key in keys)
       {
-        byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-        formattedData.AddRange(keyBytes);
+        byte[] keyBytes = Encoding.UTF8.GetBytes(key); // Convert the key to bytes
 
-        // Pad the keyBytes to match the keyLength
+        // Ensure the keyBytes array is exactly keyLength bytes
         if (keyBytes.Length < keyLength)
         {
-          formattedData.AddRange(new byte[keyLength - keyBytes.Length]);
+          // Resize the array to keyLength and fill with zeros
+          Array.Resize(ref keyBytes, (int)keyLength);
         }
+
+        // Add the resized keyBytes to the list
+        formattedData.AddRange(keyBytes);
       }
 
       return formattedData.ToArray();
     }
+
 
 
 

@@ -38,7 +38,7 @@ namespace PasswordCracking
 
     static void Main(string[] args) 
     {
-      TestHashConsistency("test");
+      TestHashConsistency("a");
       /* Console.WriteLine("Testing Password Generation and Hashing");
 
        string simplePassword = PasswordGenerator.GenerateSimplePassword(10);
