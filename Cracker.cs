@@ -24,6 +24,8 @@ namespace PasswordCracking
       //string hashedPasswordOpenCL = ByteArrayToHexString(outputData); //does not work, the result is completely wrong
 
       Console.WriteLine($"CL Hashed Password: {hashedPasswordOpenCL}");
+      Console.WriteLine($"C# Hash Length: {hashedPasswordCSharp.Length}");
+      Console.WriteLine($"CL Hash Length: {hashedPasswordOpenCL.Length}");
 
       // Compare the hashes
       if (hashedPasswordCSharp.Equals(hashedPasswordOpenCL, StringComparison.OrdinalIgnoreCase))
@@ -38,7 +40,7 @@ namespace PasswordCracking
 
     static void Main(string[] args) 
     {
-      TestHashConsistency("a");
+      TestHashConsistency("Aaa");
       /* Console.WriteLine("Testing Password Generation and Hashing");
 
        string simplePassword = PasswordGenerator.GenerateSimplePassword(10);
@@ -56,7 +58,8 @@ namespace PasswordCracking
 
       for (int i = 0; i < numberOfPasswords; i++)
       {
-        string password = PasswordGenerator.GenerateComplexPassword(1);
+        // string password = PasswordGenerator.GenerateComplexPassword(1);
+        string password = "aaa";
         string hashed = PasswordHasher.HashPassword(password);
         hashedPasswords.Add(hashed);
       }
@@ -66,8 +69,8 @@ namespace PasswordCracking
       
       // GPU cracking
       // Create an instance of BruteForceCracker
-      int maxLength = 1; // Maximum length of password to attempt
-      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()", maxLength);
+      int maxLength = 3; // Maximum length of password to attempt
+      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abcA", maxLength);
 
       foreach (var hashedPassword in hashedPasswords)
       {

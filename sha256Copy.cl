@@ -345,7 +345,7 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
     h6 += G;
     h7 += H;
 
-
+    /*
     // Convert the final hash values to a hex string
     char hex_charset[] = "0123456789abcdef";
     #pragma unroll
@@ -369,14 +369,14 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
         }
     }
     result[(globalID * 64) + 64] = '\n';
+    */
 
 
 
 
 
 
-
-/* W[0] = A + H0;
+ W[0] = A + H0;
    W[1] = B + H1;
    W[2] = C + H2;
    W[3] = D + H3;
@@ -398,6 +398,6 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
    }
    result[(globalID * 65) + 64] = '\0';
    //printf("%s %u\n", &result[(globalID * 65)], globalID);
-*/
+
 
 }

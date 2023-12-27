@@ -35,35 +35,33 @@ namespace PasswordCracking
     // vad gör processbatch egentligen? är dessa stränglistor fragment av gissningen, eller fragment av hashen?
     private void ProcessBatch(List<string> batch, string targetHash)
     {
-      // Convert batch of strings to array of strings
       string[] keys = batch.ToArray();
-
-      // Execute kernel with batch data
-      uint keyLength = (uint)keys[0].Length; // Adjust this based on your säger hur långa gissningarna ska vara kernel's expected input length
+      uint keyLength = (uint)keys[0].Length;
 
       kernel.ExecuteSha256Kernel(keys, keyLength, out byte[] outputData);
-  
-      // Process output data
+
+      Console.WriteLine($"Output data length: {outputData.Length}");
+
       for (int i = 0; i < keys.Length; i++)
       {
-        int hashStringSize = 64;
-        // Extract hash for each password in batch
-        byte[] hashBytes = new byte[hashStringSize]; // SHA-256 hash size
-         Array.Copy(outputData, i * hashStringSize, hashBytes, 0, hashStringSize); // Correct index based on hash size
-        string hashString = Encoding.ASCII.GetString(hashBytes);
-        Console.WriteLine($"Raw Hash Bytes for {keys[i]}: {BitConverter.ToString(hashBytes).Replace("-", "").ToLower()}");
-        Console.WriteLine($"output: {outputData[4]}");
-        Console.WriteLine($"Length of Hash Bytes: {hashBytes.Length}");
-    
+        // Adjust to read 64 bytes for each hash
+        byte[] hashBytes = new byte[64];
+        Array.Copy(outputData, i * 64, hashBytes, 0, 64);
+
+        // Convert to string and take only the first 64 characters
+        string hashString = Encoding.UTF8.GetString(hashBytes, 0, 64);
+
         Console.WriteLine($"Hash for {keys[i]}: {hashString}");
 
         if (hashString.Equals(targetHash, StringComparison.OrdinalIgnoreCase))
         {
           Console.WriteLine($"Password found by BruteForce: {keys[i]}");
-          return; // Match found, exit loop
+          return;
         }
       }
+      Console.WriteLine($"targethash: {targetHash}");
     }
+
 
 
 
@@ -107,7 +105,7 @@ namespace PasswordCracking
         list.Add(current);
 
         // Print out the current password guess
-        Console.WriteLine($"Generated Password Guess: {current}");
+      //  Console.WriteLine($"Generated Password Guess: {current}");
         return;
       }
 

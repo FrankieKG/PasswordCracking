@@ -55,12 +55,12 @@ namespace PasswordCracking
 
       // Prepare input data
       byte[] formattedInputData = PrepareInputData(keys, keyLength);
-      foreach (byte inputData in formattedInputData) { Console.WriteLine($"formattedinputdata: {inputData}"); }
+      
       // Create input buffer
       IMem inputBuffer = Cl.CreateBuffer(context, MemFlags.ReadOnly | MemFlags.CopyHostPtr, formattedInputData, out error);
       CheckError(error);
 
-      // Output data for each key (32 bytes for each SHA-256 hash)
+      
       outputData = new byte[keys.Length * 64 ];
       IMem outputBuffer = Cl.CreateBuffer(context, MemFlags.WriteOnly, outputData.Length, out error);
       CheckError(error);
@@ -107,24 +107,25 @@ namespace PasswordCracking
     public byte[] PrepareInputData(string[] keys, uint keyLength)
     {
       List<byte> formattedData = new List<byte>();
-      keyLength = 2;
       foreach (var key in keys)
       {
-        byte[] keyBytes = Encoding.UTF8.GetBytes(key); // Convert the key to bytes
+        byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 
-        // Ensure the keyBytes array is exactly keyLength bytes
+        // Pad the keyBytes to ensure each key is exactly keyLength bytes
         if (keyBytes.Length < keyLength)
         {
-          // Resize the array to keyLength and fill with zeros
-          Array.Resize(ref keyBytes, (int)keyLength);
+          formattedData.AddRange(keyBytes);
+          formattedData.AddRange(new byte[keyLength - keyBytes.Length]); // Padding with zeros
         }
-
-        // Add the resized keyBytes to the list
-        formattedData.AddRange(keyBytes);
+        else
+        {
+          formattedData.AddRange(keyBytes.Take((int)keyLength)); // Truncate if necessary
+        }
       }
 
       return formattedData.ToArray();
     }
+
 
 
 
