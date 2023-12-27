@@ -55,7 +55,7 @@ namespace PasswordCracking
       List<string> hashedPasswords = new List<string>();
 
       int numberOfPasswords = 3;
-      int passWordLength =1;
+      int passWordLength = 2;
 
       for (int i = 0; i < numberOfPasswords; i++)
       {
@@ -73,7 +73,7 @@ namespace PasswordCracking
       // GPU cracking
       // Create an instance of BruteForceCracker
       int maxLength = passWordLength; // Maximum length of password to attempt
-      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abc", maxLength);
+      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()", maxLength);
 
       foreach (var hashedPassword in hashedPasswords)
       {
@@ -82,13 +82,6 @@ namespace PasswordCracking
        // DictionaryAttackCracker.CrackPassword(hashedPassword, commonPasswords);
       }
       
-    }
-    public static string ByteArrayToHexString(byte[] byteArray)
-    {
-      StringBuilder hex = new StringBuilder(byteArray.Length * 2);
-      foreach (byte b in byteArray)
-        hex.AppendFormat("{0:x2}", b);
-      return hex.ToString();
     }
 
   }

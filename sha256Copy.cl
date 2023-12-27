@@ -301,7 +301,7 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
     {
         printf("%c", key[i]);
     }
-    printf("\n");
+    //printf("\n");
     
     //Prepare compression
     A = H0;

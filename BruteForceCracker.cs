@@ -54,7 +54,7 @@ namespace PasswordCracking
         string hashString = Encoding.UTF8.GetString(hashBytes, 0, 64);
        // string hashString = Cracker.ByteArrayToHexString(hashBytes);
 
-        Console.WriteLine($"Hash for {keys[i]}: {hashString}");
+       // Console.WriteLine($"Hash for {keys[i]}: {hashString}");
 
         if (hashString.Equals(targetHash, StringComparison.OrdinalIgnoreCase))
         {
@@ -82,7 +82,7 @@ namespace PasswordCracking
         list.Add(current);
 
         // Print out the current password guess
-        Console.WriteLine($"Generated Password Guess: {current}");
+       // Console.WriteLine($"Generated Password Guess: {current}");
         return;
       }
 
