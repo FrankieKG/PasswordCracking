@@ -40,7 +40,7 @@ namespace PasswordCracking
 
     static void Main(string[] args) 
     {
-      TestHashConsistency("Aaa");
+      TestHashConsistency("Abca");
       /* Console.WriteLine("Testing Password Generation and Hashing");
 
        string simplePassword = PasswordGenerator.GenerateSimplePassword(10);
@@ -54,12 +54,13 @@ namespace PasswordCracking
 
       List<string> hashedPasswords = new List<string>();
 
-      int numberOfPasswords = 1;
+      int numberOfPasswords = 12;
+      int passWordLength =2;
 
       for (int i = 0; i < numberOfPasswords; i++)
       {
-        // string password = PasswordGenerator.GenerateComplexPassword(1);
-        string password = "aaa";
+        string password = PasswordGenerator.GenerateComplexPassword(passWordLength);
+        //string password = "Abca";
         string hashed = PasswordHasher.HashPassword(password);
         hashedPasswords.Add(hashed);
       }
@@ -69,8 +70,8 @@ namespace PasswordCracking
       
       // GPU cracking
       // Create an instance of BruteForceCracker
-      int maxLength = 3; // Maximum length of password to attempt
-      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abcA", maxLength);
+      int maxLength = passWordLength; // Maximum length of password to attempt
+      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", maxLength);
 
       foreach (var hashedPassword in hashedPasswords)
       {
@@ -79,16 +80,6 @@ namespace PasswordCracking
        // DictionaryAttackCracker.CrackPassword(hashedPassword, commonPasswords);
       }
       
-
-      /*
-      //CPU Cracking
-       foreach(var hashedPassword in hashedPasswords)
-      {
-        BruteForceCracker.CrackPassword(hashedPassword, 4);
-        DictionaryAttackCracker.CrackPassword(hashedPassword, commonPasswords);
-      }
-     */
-
     }
     public static string ByteArrayToHexString(byte[] byteArray)
     {

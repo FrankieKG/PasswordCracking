@@ -24,7 +24,7 @@ namespace PasswordCracking
     {
       var combinations = GenerateCombinations(characterSet, maxLength);
 
-      int batchSize = 1000; // Adjust the batch size as needed
+      int batchSize = maxLength; // Adjust the batch size as needed
 
       for (int i = 0; i < combinations.Count; i += batchSize)
       {
@@ -32,7 +32,6 @@ namespace PasswordCracking
         ProcessBatch(batch, hashedPassword);
       }
     }
-    // vad gör processbatch egentligen? är dessa stränglistor fragment av gissningen, eller fragment av hashen?
     private void ProcessBatch(List<string> batch, string targetHash)
     {
       string[] keys = batch.ToArray();
@@ -40,10 +39,11 @@ namespace PasswordCracking
 
       kernel.ExecuteSha256Kernel(keys, keyLength, out byte[] outputData);
 
-      Console.WriteLine($"Output data length: {outputData.Length}");
+     // Console.WriteLine($"Output data length: {outputData.Length}");
 
       for (int i = 0; i < keys.Length; i++)
       {
+      //  Console.WriteLine($"Value in key array {i} {keys[i]}");
         // Adjust to read 64 bytes for each hash
         byte[] hashBytes = new byte[64];
         Array.Copy(outputData, i * 64, hashBytes, 0, 64);
@@ -51,7 +51,7 @@ namespace PasswordCracking
         // Convert to string and take only the first 64 characters
         string hashString = Encoding.UTF8.GetString(hashBytes, 0, 64);
 
-        Console.WriteLine($"Hash for {keys[i]}: {hashString}");
+       // Console.WriteLine($"Hash for {keys[i]}: {hashString}");
 
         if (hashString.Equals(targetHash, StringComparison.OrdinalIgnoreCase))
         {
@@ -59,7 +59,7 @@ namespace PasswordCracking
           return;
         }
       }
-      Console.WriteLine($"targethash: {targetHash}");
+     // Console.WriteLine($"targethash: {targetHash}");
     }
 
 
