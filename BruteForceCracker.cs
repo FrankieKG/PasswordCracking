@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace PasswordCracking
 {
@@ -74,9 +71,6 @@ namespace PasswordCracking
       if (current.Length == maxLen)
       {
         list.Add(current);
-
-        // Print out the current password guess
-       // Console.WriteLine($"Generated Password Guess: {current}");
         return;
       }
 
