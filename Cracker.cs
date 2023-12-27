@@ -10,24 +10,22 @@ namespace PasswordCracking
       string hashedPasswordCSharp = PasswordHasher.HashPassword(password);
       Console.WriteLine($"C# Hashed Password: {hashedPasswordCSharp}");
 
-      // Initialize the kernel
+   
       Kernel kernel = new Kernel();
       kernel.Initialize();
 
-      // Execute the kernel with the password
       string[] keys = { password };
       uint keyLength = (uint)password.Length;
       kernel.ExecuteSha256Kernel(keys, keyLength, out byte[] outputData);
 
-      // The outputData contains the hash in hex format
        string hashedPasswordOpenCL = Encoding.UTF8.GetString(outputData);
-      //string hashedPasswordOpenCL = ByteArrayToHexString(outputData); //does not work, the result is completely wrong
+ 
 
       Console.WriteLine($"CL Hashed Password: {hashedPasswordOpenCL}");
       Console.WriteLine($"C# Hash Length: {hashedPasswordCSharp.Length}");
       Console.WriteLine($"CL Hash Length: {hashedPasswordOpenCL.Length}");
 
-      // Compare the hashes
+
       if (hashedPasswordCSharp.Equals(hashedPasswordOpenCL, StringComparison.OrdinalIgnoreCase))
       {
         Console.WriteLine("Success: Hashes match.");
@@ -41,17 +39,6 @@ namespace PasswordCracking
     static void Main(string[] args) 
     {
       TestHashConsistency("b");
-      /* Console.WriteLine("Testing Password Generation and Hashing");
-
-       string simplePassword = PasswordGenerator.GenerateSimplePassword(10);
-       Console.WriteLine($"Simple Password: {simplePassword}");
-       Console.WriteLine($"Hashed: {PasswordHasher.HashPassword(simplePassword)}");
-
-       string complexPassword = PasswordGenerator.GenerateComplexPassword(10);
-       Console.WriteLine($"Complex Password: {complexPassword}");
-       Console.WriteLine($"Hashed: {PasswordHasher.HashPassword(complexPassword)}");
-      */
-
       List<string> hashedPasswords = new List<string>();
 
       int numberOfPasswords = 3;
@@ -60,7 +47,6 @@ namespace PasswordCracking
       for (int i = 0; i < numberOfPasswords; i++)
       {
         string password = PasswordGenerator.GenerateComplexPassword(passWordLength);
-        //string password = "Abca";
         Console.WriteLine($"Password unhashed: {password}");
         string hashed = PasswordHasher.HashPassword(password);
         Console.WriteLine($"Password hashed: {hashed}");
@@ -70,15 +56,12 @@ namespace PasswordCracking
       string[] commonPasswords = { "password", "123456", "qwerty", "abc123", "admin" };
 
       
-      // GPU cracking
-      // Create an instance of BruteForceCracker
-      int maxLength = passWordLength; // Maximum length of password to attempt
+      int maxLength = passWordLength;
       BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()", maxLength);
 
       foreach (var hashedPassword in hashedPasswords)
       {
         bruteForceCracker.CrackPasswordGPU(hashedPassword, maxLength);
-        // Assuming DictionaryAttackCracker.CrackPassword still takes 2 arguments
        // DictionaryAttackCracker.CrackPassword(hashedPassword, commonPasswords);
       }
       
