@@ -23,24 +23,26 @@ namespace PasswordCracking
     public void CrackPasswordGPU(string hashedPassword, int maxLength)
     {
       var combinations = GenerateCombinations(characterSet, maxLength);
-
-      int batchSize = maxLength; // Adjust the batch size as needed
+      // programmet funkade med maxlength som batchsize
+      int batchSize = 1000; // Adjust the batch size as needed
 
       for (int i = 0; i < combinations.Count; i += batchSize)
       {
         var batch = combinations.GetRange(i, Math.Min(batchSize, combinations.Count - i));
-        ProcessBatch(batch, hashedPassword);
+        ProcessBatch(batch, hashedPassword, (uint)batchSize);
       }
+
     }
-    private void ProcessBatch(List<string> batch, string targetHash)
+
+    private void ProcessBatch(List<string> batch, string targetHash, uint batchSize)
     {
       string[] keys = batch.ToArray();
       uint keyLength = (uint)keys[0].Length;
 
       kernel.ExecuteSha256Kernel(keys, keyLength, out byte[] outputData);
 
-     // Console.WriteLine($"Output data length: {outputData.Length}");
-
+      // Console.WriteLine($"Output data length: {outputData.Length}");
+     
       for (int i = 0; i < keys.Length; i++)
       {
       //  Console.WriteLine($"Value in key array {i} {keys[i]}");
@@ -51,44 +53,18 @@ namespace PasswordCracking
         // Convert to string and take only the first 64 characters
         string hashString = Encoding.UTF8.GetString(hashBytes, 0, 64);
 
-       // Console.WriteLine($"Hash for {keys[i]}: {hashString}");
+        Console.WriteLine($"Hash for {keys[i]}: {hashString}");
 
         if (hashString.Equals(targetHash, StringComparison.OrdinalIgnoreCase))
         {
-          Console.WriteLine($"Password found by BruteForce: {keys[i]}");
-          return;
-        }
-      }
-     // Console.WriteLine($"targethash: {targetHash}");
-    }
-
-
-
-
-
-    private byte[] PrepareBatchInputData(List<string> batch)
-    {
-      List<byte> formattedData = new List<byte>();
-      foreach (var password in batch)
-      {
-        byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-        formattedData.AddRange(passwordBytes);
-
-        // Pad or truncate to match the expected input length
-        if (passwordBytes.Length < 32) // Assuming 32 bytes input
-        {
-          formattedData.AddRange(new byte[32 - passwordBytes.Length]);
-        }
-        else if (passwordBytes.Length > 32)
-        {
-          formattedData.RemoveRange(formattedData.Count - (passwordBytes.Length - 32), passwordBytes.Length - 32);
+          Console.WriteLine($"Password found by bruteforcecracker: {keys[i]}");
+          Console.WriteLine($"Hash: {hashString}");
+          // return; // You might want to remove this return to allow finding all matches in a batch
         }
       }
 
-      return formattedData.ToArray();
+      // Console.WriteLine($"targethash: {targetHash}");
     }
-
-
 
 
     private List<string> GenerateCombinations(string chars, int maxLen)
@@ -105,7 +81,7 @@ namespace PasswordCracking
         list.Add(current);
 
         // Print out the current password guess
-      //  Console.WriteLine($"Generated Password Guess: {current}");
+        Console.WriteLine($"Generated Password Guess: {current}");
         return;
       }
 

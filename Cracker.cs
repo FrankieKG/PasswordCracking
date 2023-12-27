@@ -40,7 +40,7 @@ namespace PasswordCracking
 
     static void Main(string[] args) 
     {
-      TestHashConsistency("Abca");
+      TestHashConsistency("b");
       /* Console.WriteLine("Testing Password Generation and Hashing");
 
        string simplePassword = PasswordGenerator.GenerateSimplePassword(10);
@@ -54,14 +54,16 @@ namespace PasswordCracking
 
       List<string> hashedPasswords = new List<string>();
 
-      int numberOfPasswords = 12;
-      int passWordLength =2;
+      int numberOfPasswords = 3;
+      int passWordLength =1;
 
       for (int i = 0; i < numberOfPasswords; i++)
       {
         string password = PasswordGenerator.GenerateComplexPassword(passWordLength);
         //string password = "Abca";
+        Console.WriteLine($"Password unhashed: {password}");
         string hashed = PasswordHasher.HashPassword(password);
+        Console.WriteLine($"Password hashed: {hashed}");
         hashedPasswords.Add(hashed);
       }
 
@@ -71,7 +73,7 @@ namespace PasswordCracking
       // GPU cracking
       // Create an instance of BruteForceCracker
       int maxLength = passWordLength; // Maximum length of password to attempt
-      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", maxLength);
+      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abc", maxLength);
 
       foreach (var hashedPassword in hashedPasswords)
       {

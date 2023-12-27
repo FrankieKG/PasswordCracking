@@ -103,7 +103,7 @@ namespace PasswordCracking
         throw new Exception($"OpenCL Error: {err}");
       }
     }
-
+    
     public byte[] PrepareInputData(string[] keys, uint keyLength)
     {
       List<byte> formattedData = new List<byte>();
@@ -112,22 +112,37 @@ namespace PasswordCracking
         byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 
         // Pad the keyBytes to ensure each key is exactly keyLength bytes
-        if (keyBytes.Length < keyLength)
+
+          formattedData.AddRange(keyBytes);
+          formattedData.AddRange(new byte[1000 - keyLength]); // Padding with zeros
+  
+      }
+
+      return formattedData.ToArray();
+    }
+    /*
+    public byte[] PrepareInputData(string[] keys, uint batchSize)
+    {
+      List<byte> formattedData = new List<byte>();
+      foreach (var key in keys)
+      {
+        byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+
+        // Pad the keyBytes to ensure each key is exactly keyLength bytes
+        if (keyBytes.Length < batchSize)
         {
           formattedData.AddRange(keyBytes);
-          formattedData.AddRange(new byte[keyLength - keyBytes.Length]); // Padding with zeros
+          formattedData.AddRange(new byte[batchSize - keyBytes.Length]); // Padding with zeros
         }
         else
         {
-          formattedData.AddRange(keyBytes.Take((int)keyLength)); // Truncate if necessary
+          formattedData.AddRange(keyBytes.Take((int)batchSize)); // Truncate if necessary
         }
       }
 
       return formattedData.ToArray();
     }
-
-
-
+    */
 
 
   }
