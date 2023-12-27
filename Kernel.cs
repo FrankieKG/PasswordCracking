@@ -39,7 +39,7 @@ namespace PasswordCracking
       CheckError(error);
 
       // Read the OpenCL program source
-      string programSource = File.ReadAllText("C:\\Users\\bajsk\\source\\repos\\PasswordCrackingtest3\\PasswordCracking\\sha256Copy.cl");
+      string programSource = File.ReadAllText(@"../../../sha256.cl");
 
       // Create and build the OpenCL program
       program = Cl.CreateProgramWithSource(context, 1, new[] { programSource }, null, out error);
