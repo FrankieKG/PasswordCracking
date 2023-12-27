@@ -295,14 +295,14 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
     {
         W[i] = sig1(W[i - 2]) + W[i - 7] + sig0(W[i - 15]) + W[i - 16];
     }
-    
+    /*
     printf("Key %d: ", globalID);
     for (uint i = 0; i < keyLength; i++) 
     {
         printf("%c", key[i]);
     }
-    //printf("\n");
-    
+    printf("\n");
+    */
     //Prepare compression
     A = H0;
     B = H1;
