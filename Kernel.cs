@@ -104,20 +104,20 @@ namespace PasswordCracking
       }
     }
     
-    public byte[] PrepareInputData(string[] keys, uint keyLength)
+    public byte[] PrepareInputData(string[] keys, uint batchSize)
     {
       List<byte> formattedData = new List<byte>();
       foreach (var key in keys)
       {
         byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-        if (keyBytes.Length < keyLength)
+        if (keyBytes.Length < batchSize)
         {
           formattedData.AddRange(keyBytes);
-          formattedData.AddRange(new byte[keyLength - keyBytes.Length]);
+          formattedData.AddRange(new byte[batchSize - keyBytes.Length]);
         }
         else
         {
-          formattedData.AddRange(keyBytes.Take((int)keyLength));
+          formattedData.AddRange(keyBytes.Take((int)batchSize));
         }
       }
 

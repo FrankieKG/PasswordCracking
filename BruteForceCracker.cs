@@ -24,7 +24,7 @@ namespace PasswordCracking
     {
       var combinations = GenerateCombinations(characterSet, maxLength);
 
-      int batchSize = 1000; 
+      int batchSize = 500; 
 
       for (int i = 0; i < combinations.Count; i += batchSize)
       {
