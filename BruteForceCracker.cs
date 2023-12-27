@@ -37,9 +37,9 @@ namespace PasswordCracking
     private void ProcessBatch(List<string> batch, string targetHash, uint batchSize)
     {
       string[] keys = batch.ToArray();
-      uint keyLength = (uint)keys[0].Length;
+      //uint keyLength = (uint)keys[0].Length;
 
-      kernel.ExecuteSha256Kernel(keys, keyLength, out byte[] outputData);
+      kernel.ExecuteSha256Kernel(keys, batchSize, out byte[] outputData);
 
       // Console.WriteLine($"Output data length: {outputData.Length}");
      
@@ -52,6 +52,7 @@ namespace PasswordCracking
 
         // Convert to string and take only the first 64 characters
         string hashString = Encoding.UTF8.GetString(hashBytes, 0, 64);
+       // string hashString = Cracker.ByteArrayToHexString(hashBytes);
 
         Console.WriteLine($"Hash for {keys[i]}: {hashString}");
 

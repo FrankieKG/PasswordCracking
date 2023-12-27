@@ -295,14 +295,14 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
     {
         W[i] = sig1(W[i - 2]) + W[i - 7] + sig0(W[i - 15]) + W[i - 16];
     }
-    /*
+    
     printf("Key %d: ", globalID);
     for (uint i = 0; i < keyLength; i++) 
     {
         printf("%c", key[i]);
     }
     printf("\n");
-    */
+    
     //Prepare compression
     A = H0;
     B = H1;
@@ -376,13 +376,13 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
         }
     }
     result[(globalID * 64) + 64] = '\n';
+    
     */
 
 
 
 
-
-
+    
  W[0] = A + H0;
    W[1] = B + H1;
    W[2] = C + H2;
@@ -400,12 +400,11 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
        #pragma unroll
        for (int len = 8 - 1; len >= 0; W[j] >>= 4, --len)
        {
-           result[(globalID * 65) + (j * 8) + len] = hex_charset[W[j] & 0xf];
+           result[(globalID * 64) + (j * 8) + len] = hex_charset[W[j] & 0xf];
        }
    }
-   result[(globalID * 65) + 64] = '\0';
    //printf("%s %u\n", &result[(globalID * 65)], globalID);
 
-
+   
 
 }

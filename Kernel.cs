@@ -49,19 +49,19 @@ namespace PasswordCracking
       CheckError(error);
     }
   
-    public void ExecuteSha256Kernel(string[] keys, uint keyLength, out byte[] outputData)
+    public void ExecuteSha256Kernel(string[] keys, uint batchSize, out byte[] outputData)
     {
       ErrorCode error;
 
       // Prepare input data
-      byte[] formattedInputData = PrepareInputData(keys, keyLength);
+      byte[] formattedInputData = PrepareInputData(keys, batchSize);
       
       // Create input buffer
       IMem inputBuffer = Cl.CreateBuffer(context, MemFlags.ReadOnly | MemFlags.CopyHostPtr, formattedInputData, out error);
       CheckError(error);
 
       
-      outputData = new byte[keys.Length * 64 ];
+      outputData = new byte[keys.Length * 64];
       IMem outputBuffer = Cl.CreateBuffer(context, MemFlags.WriteOnly, outputData.Length, out error);
       CheckError(error);
 
@@ -70,7 +70,7 @@ namespace PasswordCracking
       CheckError(error);
 
       // Set kernel arguments
-      Cl.SetKernelArg(kernel, 0, keyLength); // Length of each key
+      Cl.SetKernelArg(kernel, 0, batchSize); // Length of each key
       Cl.SetKernelArg(kernel, 1, inputBuffer); // Input data
       Cl.SetKernelArg(kernel, 2, outputBuffer); // Output data
 
@@ -112,10 +112,15 @@ namespace PasswordCracking
         byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 
         // Pad the keyBytes to ensure each key is exactly keyLength bytes
-
+        if (keyBytes.Length < keyLength)
+        {
           formattedData.AddRange(keyBytes);
-          formattedData.AddRange(new byte[1000 - keyLength]); // Padding with zeros
-  
+          formattedData.AddRange(new byte[keyLength - keyBytes.Length]); // Padding with zeros
+        }
+        else
+        {
+          formattedData.AddRange(keyBytes.Take((int)keyLength)); // Truncate if necessary
+        }
       }
 
       return formattedData.ToArray();
