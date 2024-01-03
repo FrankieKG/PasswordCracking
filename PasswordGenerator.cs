@@ -22,7 +22,7 @@ namespace PasswordCracking
     public static string GenerateComplexPassword(int length) 
     {
 
-      const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+      const string chars = "abc123";
       return new string(Enumerable.Repeat(chars, length).Select(s => s[Random.Next(s.Length)]).ToArray() );
       
     }

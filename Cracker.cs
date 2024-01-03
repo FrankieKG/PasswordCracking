@@ -37,11 +37,11 @@ namespace PasswordCracking
 
     static void Main(string[] args) 
     {
-      TestHashConsistency("b");
+     // TestHashConsistency("b");
       List<string> hashedPasswords = new List<string>();
 
-      int numberOfPasswords = 3;
-      int passWordLength = 4;
+      int numberOfPasswords = 1;
+      int passWordLength = 10;
 
       for (int i = 0; i < numberOfPasswords; i++)
       {
@@ -52,16 +52,14 @@ namespace PasswordCracking
         hashedPasswords.Add(hashed);
       }
 
-      string[] commonPasswords = { "password", "123456", "qwerty", "abc123", "admin" };
-
       
       int maxLength = passWordLength;
-      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()", maxLength);
+      BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abc123", maxLength);
+      int totalPasswords = hashedPasswords.Count;
 
       foreach (var hashedPassword in hashedPasswords)
       {
-        bruteForceCracker.CrackPasswordGPU(hashedPassword, maxLength);
-       // DictionaryAttackCracker.CrackPassword(hashedPassword, commonPasswords);
+        bruteForceCracker.CrackPasswordGPU(hashedPassword, maxLength, totalPasswords);
       }
       
     }

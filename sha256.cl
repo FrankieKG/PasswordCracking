@@ -161,14 +161,7 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
     {
         W[i] = sig1(W[i - 2]) + W[i - 7] + sig0(W[i - 15]) + W[i - 16];
     }
-    /*
-    printf("Key %d: ", globalID);
-    for (uint i = 0; i < keyLength; i++) 
-    {
-        printf("%c", key[i]);
-    }
-    printf("\n");
-    */
+
     //Prepare compression
     A = H0;
     B = H1;
@@ -218,36 +211,6 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
     h6 += G;
     h7 += H;
 
-    /*
-    // Convert the final hash values to a hex string
-    char hex_charset[] = "0123456789abcdef";
-    #pragma unroll
-    for (int j = 0; j < 8; j++)
-    {
-        uint currentVal;
-        switch(j) {
-            case 0: currentVal = h0; break;
-            case 1: currentVal = h1; break;
-            case 2: currentVal = h2; break;
-            case 3: currentVal = h3; break;
-            case 4: currentVal = h4; break;
-            case 5: currentVal = h5; break;
-            case 6: currentVal = h6; break;
-            default: currentVal = h7;
-        }
-        
-        for (int len = 8 - 1; len >= 0; currentVal >>= 4, --len)
-        {
-            result[(globalID * 64) + (j * 8) + len] = hex_charset[currentVal & 0xf];
-        }
-    }
-    result[(globalID * 64) + 64] = '\n';
-    
-    */
-
-
-
-
     
  W[0] = A + H0;
    W[1] = B + H1;
@@ -273,4 +236,28 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
 
    
 
+}
+
+__kernel void generate_passwords(__global char* output, __global const char* charset, const uint charset_length, const uint max_length, const ulong total_combinations) {
+    ulong global_id = get_global_id(0);
+
+    if (global_id >= total_combinations) {
+        return; // Skip if the global ID exceeds the total number of combinations
+    }
+
+    ulong temp_id = global_id;
+    uint idx = 0;
+
+    // Initialize output for this ID
+    for (uint i = 0; i < max_length; i++) {
+        output[global_id * max_length + i] = 0;
+    }
+
+    // Generate password combination
+    while (temp_id > 0 && idx < max_length) {
+        uint char_idx = temp_id % charset_length;
+        output[global_id * max_length + idx] = charset[char_idx];
+        temp_id /= charset_length;
+        idx++;
+    }
 }
