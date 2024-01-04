@@ -4,6 +4,7 @@ namespace PasswordCracking
 {
   class Cracker
   {
+    // Test metod
     public static void TestHashConsistency(string password)
     {
       string hashedPasswordCSharp = PasswordHasher.HashPassword(password);

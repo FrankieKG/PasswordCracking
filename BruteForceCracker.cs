@@ -21,7 +21,7 @@ namespace PasswordCracking
       kernel.Initialize();
     }
 
-    // GPU
+    // GPU Parallel
     public void CrackPasswordGPU(string hashedPassword, int maxLength, int totalPasswords)
     {
       var combinations = GenerateCombinations(characterSet, maxLength);
