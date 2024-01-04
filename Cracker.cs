@@ -42,7 +42,7 @@ namespace PasswordCracking
       List<string> hashedPasswords = new List<string>();
 
       int numberOfPasswords = 1;
-      int passWordLength = 5;
+      int passWordLength = 8;
 
       for (int i = 0; i < numberOfPasswords; i++)
       {

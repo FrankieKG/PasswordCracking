@@ -192,25 +192,6 @@ kernel void sha256hash_multiple_kernel(uint keyLength, global uchar* keys, globa
         A = T1 + T2;
     }
 
-    uint h0 = H0;
-    uint h1 = H1;
-    uint h2 = H2;
-    uint h3 = H3;
-    uint h4 = H4;
-    uint h5 = H5;
-    uint h6 = H6;
-    uint h7 = H7;
-
-    // Add the compressed chunk's hash to the initial hash value
-    h0 += A;
-    h1 += B;
-    h2 += C;
-    h3 += D;
-    h4 += E;
-    h5 += F;
-    h6 += G;
-    h7 += H;
-
     
  W[0] = A + H0;
    W[1] = B + H1;
@@ -242,18 +223,16 @@ __kernel void generate_passwords(__global char* output, __global const char* cha
     ulong global_id = get_global_id(0);
 
     if (global_id >= total_combinations) {
-        return; // Skip if the global ID exceeds the total number of combinations
+        return;
     }
 
     ulong temp_id = global_id;
     uint idx = 0;
 
-    // Initialize output for this ID
     for (uint i = 0; i < max_length; i++) {
         output[global_id * max_length + i] = 0;
     }
 
-    // Generate password combination
     while (temp_id > 0 && idx < max_length) {
         uint char_idx = temp_id % charset_length;
         output[global_id * max_length + idx] = charset[char_idx];

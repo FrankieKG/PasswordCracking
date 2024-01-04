@@ -137,13 +137,13 @@ namespace PasswordCracking
       static void RecurseCrack(string current, string characterSet, int length, string hashedPassword)
       {
         Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start(); // Start measuring time
+        stopwatch.Start();
         if (length == 0)
         {
           if (PasswordHasher.HashPassword(current) == hashedPassword)
           {
             Console.WriteLine($"Password found by BruteForce: {current}");
-            stopwatch.Stop(); // Stop measuring time
+            stopwatch.Stop();
             Console.WriteLine($"Total cracking time for all passwords: {stopwatch.ElapsedMilliseconds} ms");
             return;
           }

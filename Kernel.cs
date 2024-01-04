@@ -95,7 +95,7 @@ namespace PasswordCracking
       }
     }
     
-    public byte[] PrepareInputData(string[] keys, uint batchSize)
+    public static byte[] PrepareInputData(string[] keys, uint batchSize)
     {
       List<byte> formattedData = new List<byte>();
       foreach (var key in keys)
@@ -119,17 +119,17 @@ namespace PasswordCracking
     {
       ErrorCode error;
 
-      // Prepare data for charset
+
       byte[] charsetBytes = Encoding.UTF8.GetBytes(charset);
       IMem charsetBuffer = Cl.CreateBuffer(context, MemFlags.ReadOnly | MemFlags.CopyHostPtr, charsetBytes, out error);
       CheckError(error);
 
-      // Prepare output buffer
+
       byte[] outputData = new byte[totalCombinations * maxLength];
       IMem outputBuffer = Cl.CreateBuffer(context, MemFlags.WriteOnly, outputData.Length, out error);
       CheckError(error);
 
-      // Load and set kernel
+
       var kernel = Cl.CreateKernel(program, "generate_passwords", out error);
       CheckError(error);
       Cl.SetKernelArg(kernel, 0, outputBuffer);
@@ -138,22 +138,18 @@ namespace PasswordCracking
       Cl.SetKernelArg(kernel, 3, maxLength);
       Cl.SetKernelArg(kernel, 4, totalCombinations);
 
-      // Execute the kernel
       Cl.EnqueueNDRangeKernel(commandQueue, kernel, 1, null, new[] { (IntPtr)totalCombinations }, null, 0, null, out var _);
 
-      // Read the results
       Cl.EnqueueReadBuffer(commandQueue, outputBuffer, Bool.True, IntPtr.Zero, outputData.Length, outputData, 0, null, out var _);
 
-      // Convert output data to strings
       generatedPasswords = ConvertOutputToStringArray(outputData, maxLength, totalCombinations);
 
-      // Release resources
       Cl.ReleaseKernel(kernel);
       Cl.ReleaseMemObject(charsetBuffer);
       Cl.ReleaseMemObject(outputBuffer);
     }
 
-    private string[] ConvertOutputToStringArray(byte[] outputData, uint maxLength, ulong totalCombinations)
+    private static string[] ConvertOutputToStringArray(byte[] outputData, uint maxLength, ulong totalCombinations)
     {
       string[] passwords = new string[totalCombinations];
       for (ulong i = 0; i < totalCombinations; i++)
