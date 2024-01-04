@@ -120,6 +120,43 @@ namespace PasswordCracking
         GenerateCombinationsRecursive(list, next, chars, maxLen);
       }
     }
-    
+
+
+    // CPU Parallel 
+    public static void CrackPassword(string hashedPassword, int maxLength)
+    {
+
+      var characterSet = "abc123";
+
+      Parallel.ForEach(characterSet, (c) =>
+      {
+        RecurseCrack(c.ToString(), characterSet, maxLength - 1, hashedPassword);
+      });
+
+
+      static void RecurseCrack(string current, string characterSet, int length, string hashedPassword)
+      {
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start(); // Start measuring time
+        if (length == 0)
+        {
+          if (PasswordHasher.HashPassword(current) == hashedPassword)
+          {
+            Console.WriteLine($"Password found by BruteForce: {current}");
+            stopwatch.Stop(); // Stop measuring time
+            Console.WriteLine($"Total cracking time for all passwords: {stopwatch.ElapsedMilliseconds} ms");
+            return;
+          }
+        }
+        else
+        {
+          foreach (char c in characterSet)
+          {
+            RecurseCrack(current + c, characterSet, length - 1, hashedPassword);
+          }
+        }
+      }
+    }
+
   }
 }

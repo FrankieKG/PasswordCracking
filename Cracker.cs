@@ -37,11 +37,12 @@ namespace PasswordCracking
 
     static void Main(string[] args) 
     {
+      bool gpuCrack = false;
      // TestHashConsistency("b");
       List<string> hashedPasswords = new List<string>();
 
       int numberOfPasswords = 1;
-      int passWordLength = 10;
+      int passWordLength = 5;
 
       for (int i = 0; i < numberOfPasswords; i++)
       {
@@ -56,10 +57,22 @@ namespace PasswordCracking
       int maxLength = passWordLength;
       BruteForceCracker bruteForceCracker = new BruteForceCracker(characterSet: "abc123", maxLength);
       int totalPasswords = hashedPasswords.Count;
+      if(gpuCrack) 
+      { 
+        Console.WriteLine("Using GPU-Cracker");
+        foreach (var hashedPassword in hashedPasswords)
+        {
+          bruteForceCracker.CrackPasswordGPU(hashedPassword, maxLength, totalPasswords);
+        }
 
-      foreach (var hashedPassword in hashedPasswords)
-      {
-        bruteForceCracker.CrackPasswordGPU(hashedPassword, maxLength, totalPasswords);
+      }
+      if(gpuCrack == false) 
+      { 
+        Console.WriteLine("Using CPU-Cracker");
+        foreach (var hashedPassword in hashedPasswords)
+        {
+          BruteForceCracker.CrackPassword(hashedPassword, maxLength);
+        }
       }
       
     }
