@@ -94,6 +94,7 @@ Projektet inkluderar följande funktioner:
 
 ## Systemöversikt
 Applikationen är en GPU-baserad lösenordsknäckare som använder brute force-taktik. Den använder OpenCL för att utnyttja GPU:ns kapacitet för parallellarbete. Applikationen är utvecklad i Visual Studio 2022 och implementerar SHA-256-algoritmen för att generera och knäcka lösenordshashar. Strukturen består av flera huvudkomponenter, inklusive en lösenordsgenerator, en GPU-baserad hashfunktion, en CPU-baserad hashfunktion och en bruteforcemekanism.
+
 ![bild](https://github.com/FrankieKG/PasswordCracking/assets/91194975/d36c8c38-48dc-43de-9afa-10e9409f93e6)
 
 ## Designval och implementation
